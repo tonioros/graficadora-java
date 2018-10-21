@@ -1,4 +1,4 @@
-package view;
+package grafica;
 
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Side;
