@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_graficas" default="compile.module.graficas">
+  <dirname property="module.graficas.basedir" file="${ant.file.module_graficas}"/>
+  
+  <property name="module.jdk.home.graficas" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.graficas" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.graficas" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.graficas" value="-encoding UTF-8 -source 10 -target 10 ${compiler.args}"/>
+  
+  <property name="graficas.output.dir" value="${module.graficas.basedir}/out/production/Graficas"/>
+  <property name="graficas.testoutput.dir" value="${module.graficas.basedir}/out/test/Graficas"/>
+  
+  <path id="graficas.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="graficas.module.production.classpath">
+    <path refid="${module.jdk.classpath.graficas}"/>
+  </path>
+  
+  <path id="graficas.runtime.production.module.classpath">
+    <pathelement location="${graficas.output.dir}"/>
+  </path>
+  
+  <path id="graficas.module.classpath">
+    <path refid="${module.jdk.classpath.graficas}"/>
+    <pathelement location="${graficas.output.dir}"/>
+  </path>
+  
+  <path id="graficas.runtime.module.classpath">
+    <pathelement location="${graficas.testoutput.dir}"/>
+    <pathelement location="${graficas.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.graficas">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.graficas">
+    <patternset refid="excluded.from.module.graficas"/>
+  </patternset>
+  
+  <path id="graficas.module.sourcepath">
+    <dirset dir="${module.graficas.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.graficas" depends="compile.module.graficas.production,compile.module.graficas.tests" description="Compile module Graficas"/>
+  
+  <target name="compile.module.graficas.production" depends="register.custom.compilers" description="Compile module Graficas; production classes">
+    <mkdir dir="${graficas.output.dir}"/>
+    <javac2 destdir="${graficas.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.graficas}/javac">
+      <compilerarg line="${compiler.args.graficas}"/>
+      <bootclasspath refid="graficas.module.bootclasspath"/>
+      <classpath refid="graficas.module.production.classpath"/>
+      <src refid="graficas.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.graficas"/>
+    </javac2>
+    
+    <copy todir="${graficas.output.dir}">
+      <fileset dir="${module.graficas.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.graficas.tests" depends="register.custom.compilers,compile.module.graficas.production" description="compile module Graficas; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.graficas" description="cleanup module">
+    <delete dir="${graficas.output.dir}"/>
+    <delete dir="${graficas.testoutput.dir}"/>
+  </target>
+</project>
